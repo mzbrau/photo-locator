@@ -1,0 +1,128 @@
+﻿<Window x:Class="PhotoLocator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhotoLocator"
+        mc:Ignorable="d"
+        xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        Title="Photo Locator" Height="600" Width="1000" Loaded="Window_Loaded" 
+        Icon="pin_icon.ico">
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="brushWatermarkBackground" Color="White" />
+        <SolidColorBrush x:Key="brushWatermarkForeground" Color="LightSteelBlue" />
+        <SolidColorBrush x:Key="brushWatermarkBorder" Color="Indigo" />
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <local:TextInputToVisibilityConverter x:Key="TextInputToVisibilityConverter" />
+
+        <Style x:Key="EntryFieldStyle" TargetType="Grid" >
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="2" />
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Content="Open" Click="Open_Click" Margin="5" HorizontalAlignment="Stretch" Padding="2"
+                    ToolTip="Add photos to the application"/>
+            <Button Grid.Column="1" Content="Rename All" Click="Rename_Click" Margin="5" HorizontalAlignment="Stretch" Padding="2"
+                    ToolTip="Rename all the open photos to the format 'Date Time Address'"/>
+            <Button Grid.Column="2" Content="Export All" Margin="5" HorizontalAlignment="Stretch" Padding="2" Click="ExportAll_Click"
+                    ToolTip="Export all the photo information to a delimited format (semi-colon delimited)"/>
+            <Button Grid.Column="3" Content="Show All" Margin="5" HorizontalAlignment="Stretch" Padding="2" Click="ShowAll_Click"
+                    ToolTip="Show all the currently open photos on the same map"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Background="{StaticResource brushWatermarkBackground}" Style="{StaticResource EntryFieldStyle}" >
+            <TextBlock Margin="2" Text="Filter..." Foreground="{StaticResource brushWatermarkForeground}">
+                <TextBlock.Visibility>
+                    <MultiBinding Converter="{StaticResource TextInputToVisibilityConverter}">
+                        <Binding ElementName="filterBox" Path="Text.IsEmpty" />
+                        <Binding ElementName="filterBox" Path="IsFocused" />
+                    </MultiBinding>
+                </TextBlock.Visibility>
+            </TextBlock>
+            <TextBox x:Name="filterBox" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" 
+                     Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+
+        <ListView x:Name="photoList" Grid.Row="2" ItemsSource="{Binding PhotoSource}"
+                  SelectedItem="{Binding SelectedPhoto}" SelectionChanged="PhotoList_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition MaxWidth="300"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Image Grid.RowSpan="4" VerticalAlignment="Top" Source="{Binding Bitmap}" 
+                               Margin="2" Cursor="Hand" MouseLeftButtonDown="Image_MouseDown"/>
+
+
+                        <TextBlock Grid.Column="1" Margin="2" Text="{Binding FileName}" FontWeight="Bold" TextWrapping="Wrap" MaxWidth="280"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="2" Text="{Binding Address}" TextWrapping="Wrap" MaxWidth="280"/>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Margin="2" Text="{Binding TakenDate, StringFormat=dd/MM/yyyy HH:mm}" MaxWidth="280"/>
+
+                        <Grid Grid.Row="0" Grid.RowSpan="4" Grid.Column="2" HorizontalAlignment="Center" Visibility="{Binding HasLocation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                              Margin="10" MouseLeftButtonDown="NavigateToPhoto" Cursor="Hand">
+                            <Ellipse  VerticalAlignment="Center" Height="30" Width="30" Fill="Orange"/>
+                            <TextBlock Text="{Binding Index}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Grid>
+                    </Grid>
+
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="SelectCurrentItem"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+            <TextBlock Text="Displaying " Margin="2" />
+            <TextBlock Text="{Binding Items.Count, ElementName=photoList}" Margin="2"/>
+            <TextBlock Text=" photos." Margin="2"/>
+        </StackPanel>
+
+        <Button Grid.Row="3" Content="Settings" Margin="5" HorizontalAlignment="Right" Padding="2" Width="120" Click="Settings_Click" />
+
+        <m:Map x:Name="BingMap" Grid.Column="1" Grid.RowSpan="4" Culture="en-au"
+               CredentialsProvider="{Binding BingMapsCredentials}" />
+
+    </Grid>
+</Window>
