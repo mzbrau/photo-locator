@@ -14,6 +14,12 @@ It has the following features:
 - Export all photo details to a CSV file (semi-colon delimited)
 - Rename all photos to the format 'Date Time Address'
 
+## Bing Maps Key
+The application relies on a bing maps API key which you can get for free for private use.
+The map key will be set the first time you run the application. It is required for the map and for the GPS coordinate lookups.
+See the [Microsoft Website](https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key) for more details.
+
+
 ## Releases
 You can download the release installer here.
 
