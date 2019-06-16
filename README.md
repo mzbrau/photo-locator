@@ -6,10 +6,10 @@ Photo Locator is an easy to use photo location visualisation tool written in .NE
 It reads the photo metadata and then displays the location of the photos on the map.
 
 It has the following features:
-- Show Preview of the Image
-- Open multiple images
-- Display image locations on the map
+- Open images and display their locations on the map
 - Centre the map on the location of an image (click the number)
+- Find image in the list (click the pin)
+- Filter the image list
 - Open the image (click the image)
 - Export all photo details to a CSV file (semi-colon delimited)
 - Rename all photos to the format 'Date Time Address'
