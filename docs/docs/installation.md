@@ -62,9 +62,9 @@ To uninstall Photo Locator:
 3. Click **Uninstall** and follow the prompts.
 
 :::note
-User settings (including your Bing Maps key) are stored in the Windows registry under `HKEY_CURRENT_USER`. These are **not** removed automatically during uninstall. To remove them, you can delete the key at:
+User settings (including your Bing Maps key) are stored in a `user.config` file under `%LOCALAPPDATA%` and are **not** removed automatically during uninstall. To remove them, delete the folder at:
 ```
-HKEY_CURRENT_USER\Software\PhotoLocator
+%LOCALAPPDATA%\PhotoLocator
 ```
 :::
 

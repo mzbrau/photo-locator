@@ -10,7 +10,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 const config = {
   title: 'Photo Locator',
   tagline: 'Visualise where your photos were taken on an interactive map',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.svg',
 
   // Set the production url of your site here
   url: 'https://mzbrau.github.io',
@@ -54,7 +54,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/photo-locator-social.png',
       navbar: {
         title: 'Photo Locator',
         logo: {

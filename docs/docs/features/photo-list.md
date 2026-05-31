@@ -21,7 +21,6 @@ Each row in the photo list contains:
 | **Filename** | The current filename of the photo |
 | **Address** | The reverse-geocoded street address, or "Unknown Location" |
 | **Date taken** | Extracted from EXIF `Date/Time` tag; falls back to file creation date |
-| **Coordinates** | Latitude and longitude (blank if no GPS data) |
 
 ## Sorting
 
